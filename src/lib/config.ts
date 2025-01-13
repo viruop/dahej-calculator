@@ -35,4 +35,17 @@ export const formConfig = {
     { value: "Private", label: "Private 🏢" },
     { value: "Other", label: "Other 🧐" },
   ] as const,
+  formValues: [
+    "name",
+    "age",
+    "height",
+    "caste",
+    "education",
+    "skinTone",
+    "bodyCount",
+    "cooking",
+    "job",
+    "income",
+    "snapscore",
+  ] as const,
 };

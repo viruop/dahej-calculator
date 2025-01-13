@@ -22,7 +22,7 @@ export const formSchema = z.object({
   skinTone: z.enum(toTuple(formConfig.skinTone.map((item) => item.value)), {
     required_error: "Please select skin tone",
   }),
-  income: z.number().min(0, "Income cannot be negative").optional(),
+
   bodyCount: z.enum(toTuple(formConfig.bodyCount.map((item) => item.value)), {
     required_error: "Please select body count",
   }),
@@ -32,4 +32,6 @@ export const formSchema = z.object({
   job: z.enum(toTuple(formConfig.job.map((item) => item.value)), {
     required_error: "Please select job type",
   }),
+  income: z.number().min(0, "Income cannot be negative").optional(),
+  snapscore: z.number().min(0, "snapscore cannot be negative").optional(),
 });

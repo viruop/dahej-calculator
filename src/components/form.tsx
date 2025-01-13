@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button"; // Assuming Button component is available
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
@@ -25,19 +25,19 @@ import { Slider } from "./ui/slider";
 import { formConfig } from "@/lib/config";
 
 export default function ParentPage() {
-  const defaultValues:FormValues = {
+  const defaultValues: FormValues = {
     name: "",
     age: 18,
     height: "",
-    caste: formConfig.caste[0].value, // Only the value "Brahmin"
-  education: formConfig.education[0].value, // Only the value "Masters"
-  skinTone: formConfig.skinTone[0].value, // Only the value "Fair"
-  income: 0,
-  bodyCount: formConfig.bodyCount[0].value, // Only the value "0"
-  cooking: formConfig.cooking[0].value, // Only the value "Yes"
-  job: formConfig.job[0].value, // Only the value "Private"
-  
+    caste: formConfig.caste[0].value,
+    education: formConfig.education[0].value,
+    skinTone: formConfig.skinTone[0].value,
+    income: 0,
+    bodyCount: formConfig.bodyCount[0].value,
+    cooking: formConfig.cooking[0].value,
+    job: formConfig.job[0].value,
   };
+
   const dulhaForm = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -48,80 +48,39 @@ export default function ParentPage() {
     defaultValues,
   });
 
-  // Combined submit handler for both forms
   const handleMatch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Get form values
     const dulhaData = dulhaForm.getValues();
     const dulhanData = dulhanForm.getValues();
 
-    // Calculate dahej
     const dahejAmount = calculateDahej(dulhaData, dulhanData);
-
-    // Log or display the result
     console.log("Final Dahej Amount:", dahejAmount);
+
     dulhaForm.handleSubmit(onSubmitDulha)();
     dulhanForm.handleSubmit(onSubmitDulhan)();
   };
 
   const calculateDahej = (dulhaData: FormValues, dulhanData: FormValues) => {
-    // Dulha Score
-    let dulhaScore = 0;
-    dulhaScore += dulhaData.age! > 35 ? -1000 : 0;
-    dulhaScore += Number(dulhaData?.height) > 6 ? 2000 : 0;
-    dulhaScore +=
-      dulhaData.caste === "Brahmin"
-        ? 5000
-        : dulhaData.caste === "SC/ST"
-        ? -3000
-        : 0;
-    dulhaScore +=
-      dulhaData.education === "PhD"
-        ? 10000
-        : dulhaData.education === "Masters"
-        ? 5000
-        : 0;
-    dulhaScore += Number(dulhaData.income) * 5000;
-    dulhaScore +=
-      dulhaData.cooking === "Yes"
-        ? 2000
-        : -1000
-     
-    dulhaScore -= Number(dulhaData.bodyCount)! * 500;
-    dulhaScore += dulhaData.job === "Government" ? 8000 : 4000;
+    const dulhaScore = calculateScore(dulhaData, "dulha");
+    const dulhanScore = calculateScore(dulhanData, "dulhan");
 
-    // Dulhan Score
-    let dulhanScore = 0;
-    dulhanScore +=
-      dulhanData.age! < 25 ? 5000 : dulhanData.age! > 30 ? -2000 : 0;
-    dulhanScore += Number(dulhanData.height!) > 5.5 ? 2000 : 0;
-    dulhanScore +=
-      dulhanData.caste === "Brahmin"
-        ? 5000
-        : dulhanData.caste === "SC/ST"
-        ? -3000
-        : 0;
-    dulhanScore +=
-      dulhanData.education === "PhD"
-        ? 10000
-        : dulhanData.education === "Masters"
-        ? 5000
-        : 0;
-    dulhanScore +=
-      dulhanData.skinTone === "Fair"
-        ? 3000
-        : dulhanData.skinTone === "Medium"
-        ? 1500
-        : 0;
-    dulhanScore += dulhanData.cooking === "Yes" ? 5000 : -1000;
-    dulhanScore -=  Number(dulhaData.bodyCount)! * 1000;
-    dulhanScore += dulhanData.job === "Government" ? 8000 : 4000;
+    return Math.max(dulhaScore - dulhanScore, 0);
+  };
 
-    // Final Dahej Calculation
-    console.log("dulhaScore", dulhaScore);
-    console.log("dulhanScore", dulhanScore);
-    const dahej = dulhaScore - dulhanScore;
-    return dahej > 0 ? dahej : 0;
+  const calculateScore = (data: FormValues, type: string) => {
+    let score = 0;
+
+    // Simplify score calculation with reusable logic
+    score += type === "dulha" ? data.age! > 35 ? -1000 : 0 : data.age! < 25 ? 5000 : data.age! > 30 ? -2000 : 0;
+    score += type === "dulha" ? (Number(data?.height) > 6 ? 2000 : 0) : (Number(data.height!) > 5.5 ? 2000 : 0);
+    score += data.caste === "Brahmin" ? 5000 : data.caste === "SC/ST" ? -3000 : 0;
+    score += data.education === "PhD" ? 10000 : data.education === "Masters" ? 5000 : 0;
+    score += type === "dulhan" ? (data.skinTone === "Fair" ? 3000 : data.skinTone === "Medium" ? 1500 : 0) : 0;
+    score += data.cooking === "Yes" ? 2000 : -1000;
+    score -= Number(data.bodyCount)! * (type === "dulha" ? 500 : 1000);
+    score += data.job === "Government" ? 8000 : 4000;
+
+    return score;
   };
 
   const onSubmitDulha = (data: FormValues) => {
@@ -134,9 +93,7 @@ export default function ParentPage() {
 
   return (
     <div className="w-full h-[90vh] relative">
-      {/* First Section as background */}
-      <div className=" rounded-2xl border-2 bg-white absolute inset-0 overflow-hidden z-0">
-        {/* Top left running figure */}
+      <div className="rounded-2xl border-2 bg-white absolute inset-0 overflow-hidden z-0">
         <div className="absolute -left-4 top-1/4 transform -rotate-12">
           <svg
             width="120"
@@ -158,8 +115,6 @@ export default function ParentPage() {
             />
           </svg>
         </div>
-
-        {/* Bottom right jumping figure */}
         <div className="absolute right-10 bottom-1/4 transform rotate-45">
           <svg
             width="120"
@@ -181,55 +136,18 @@ export default function ParentPage() {
             />
           </svg>
         </div>
-
-        {/* Floating boxes */}
-        {/* {[...Array(8)].map((_, i) => (
-      <div
-        key={i}
-        className="absolute w-8 h-8 bg-[#FFD6C9] opacity-20 rounded-lg transform rotate-45 animate-float"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-          animationDelay: `${i * 0.5}s`,
-          animationDuration: `${4 + Math.random() * 2}s`,
-        }}
-      />
-    ))} */}
       </div>
 
-      {/* Second Section */}
       <div className="w-[90%] h-full relative top-40 z-10 mx-auto rounded-xl bg-rose-200 shadow-sm">
-        {/* Main dark form section */}
         <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Dulha Form */}
-            <Form {...dulhaForm}>
-              <form className="space-y-6">
-                <h2 className="text-white text-xl font-semibold mb-6">
-                  Dulha Details
-                </h2>
-                <div className="grid grid-cols-2 gap-6">
-                  <RenderFormFields form={dulhaForm} />
-                </div>
-              </form>
-            </Form>
-
-            {/* Dulhan Form */}
-            <Form {...dulhanForm}>
-              <form className="space-y-6">
-                <h2 className="text-white text-xl font-semibold mb-6">
-                  Dulhan Details
-                </h2>
-
-                <div className="grid grid-cols-2 gap-6">
-                  <RenderFormFields form={dulhanForm} />
-                </div>
-              </form>
-            </Form>
-
-            {/* Match Button */}
+            {/* Dulha and Dulhan forms */}
+            {["Dulha", "Dulhan"].map((role) => (
+              <FormComponent key={role} form={role === "Dulha" ? dulhaForm : dulhanForm} role={role} />
+            ))}
           </div>
         </div>
+
         <div className="p-6 rounded-xl">
           <Button
             className="w-full bg-[#FF7B54] text-white hover:bg-[#FF6B3D] text-lg font-semibold py-6"
@@ -240,238 +158,79 @@ export default function ParentPage() {
         </div>
       </div>
 
-      {/* Header and Description */}
       <div className="absolute top-[10%] w-full text-center z-10">
         <h1 className="text-4xl font-bold text-black mb-2">Dahej Calculator</h1>
-        <p className="text-black mb-12">
-          Fill in your preferences and let us find your soulmate
-        </p>
+        <p className="text-black mb-12">Fill in your preferences and let us find your soulmate</p>
       </div>
     </div>
   );
 }
 
-// RenderFormFields Component - A reusable function to render form fields
+const FormComponent = ({ form, role }: { form: UseFormReturn<FormValues>; role: string }) => (
+  <Form {...form}>
+    <form className="space-y-6">
+      <h2 className="text-white text-xl font-semibold mb-6">{`${role} Details`}</h2>
+      <div className="grid grid-cols-2 gap-6">
+        <RenderFormFields form={form} />
+      </div>
+    </form>
+  </Form>
+);
+
 const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
   <>
-    <FormField
-      control={form.control}
-      name="name"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Name</FormLabel>
-          <FormControl>
-            <Input
-              {...field}
-              className="bg-[#1E293B] text-white border-0"
-              placeholder="Enter name"
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="age"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Age</FormLabel>
-          <FormControl>
-            <Input
-              {...field}
-              type="number"
-              className="bg-[#1E293B] text-white border-0"
-              placeholder="Enter age"
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="height"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Height</FormLabel>
-          <FormControl>
-            <Input
-              {...field}
-              type="number"
-              className="bg-[#1E293B] text-white border-0"
-              placeholder="Enter height"
-              required
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="caste"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Caste/Sub-Caste</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
-                <SelectValue placeholder="Select caste" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {formConfig.caste.map((caste) => (
-                <SelectItem key={caste.value} value={caste.value}>
-                  {caste.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="education"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Education</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
-                <SelectValue placeholder="Select education" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {formConfig.education.map((education) => (
-                <SelectItem key={education.value} value={education.value}>
-                  {education.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="skinTone"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Skin Tone</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
-                <SelectValue placeholder="Select skin tone" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {formConfig.skinTone.map((tone) => (
-                <SelectItem key={tone.value} value={tone.value}>
-                  {tone.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="income"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Income (in lakhs)</FormLabel>
-          <FormControl>
-            <Slider
-              onValueChange={(value) => field.onChange(value[0])}
-              defaultValue={[field?.value || 0]}
-              max={100}
-              step={1}
-              className="bg-[#1E293B]"
-            />
-          </FormControl>
-          <div className="text-white text-sm">{field.value} LPA</div>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="bodyCount"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Body Count</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
-                <SelectValue placeholder="Select body count" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {formConfig.bodyCount.map((count) => (
-                <SelectItem key={count.value} value={count.value}>
-                  {count.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="cooking"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Can Cook?</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
-                <SelectValue placeholder="Select cooking preference" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {formConfig.cooking.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="job"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-white">Job Type</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
-                <SelectValue placeholder="Select job type" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {formConfig.job.map((job) => (
-                <SelectItem key={job.value} value={job.value}>
-                  {job.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+    {formConfig.formValues.map(
+      (field) => (
+        <FormField
+          key={field}
+          control={form.control}
+          //@ts-ignore
+          name={field}
+          render={({ field }) => <FormFieldRenderer field={field} name={field.name} />}
+        />
+      )
+    )}
   </>
 );
+
+const FormFieldRenderer = ({ field, name }: { field: any; name: string }) => (
+  <FormItem>
+    <FormLabel className="text-white">{capitalizeFirstLetter(name)}</FormLabel>
+    <FormControl>
+      {name === "income" || name === "snapscore" ? (
+        <Slider
+          onValueChange={(value) => field.onChange(value[0])}
+          defaultValue={[field.value || 0]}
+          max={100}
+          step={1}
+          className="bg-[#1E293B]"
+        />
+      ) : name === "caste" || name === "education" || name === "skinTone" || name === "bodyCount" || name === "job" ? (
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <FormControl>
+            <SelectTrigger className="bg-[#1E293B] text-white border-0">
+              <SelectValue placeholder={`Select ${name}`} />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {formConfig[name]?.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : (
+        <Input
+          {...field}
+          className="bg-[#1E293B] text-white border-0"
+          placeholder={`Enter ${name}`}
+        />
+      )}
+    </FormControl>
+    <FormMessage />
+  </FormItem>
+);
+
+const capitalizeFirstLetter = (string: string) =>
+  string.charAt(0).toUpperCase() + string.slice(1);
