@@ -1,14 +1,7 @@
+import { formSchema } from "@/schemas/formSchema";
+import { z } from "zod";
+
 export type PersonType = "dulha" | "dulhan";
 
-export interface FormValues {
-  name: string;
-  age?: number;
-  height?: string;
-  caste?: string;
-  education?: string;
-  skinTone?: string;
-  income?: number;
-  bodyCount?: string;
-  cooking?: string;
-  job?: string;
-}
+// Generate TypeScript type from the Zod schema
+export type FormValues = z.infer<typeof formSchema>;

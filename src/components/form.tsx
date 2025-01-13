@@ -22,19 +22,21 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Slider } from "./ui/slider";
+import { formConfig } from "@/lib/config";
 
 export default function ParentPage() {
-  const defaultValues = {
+  const defaultValues:FormValues = {
     name: "",
     age: 18,
     height: "",
-    caste: "",
-    education: "",
-    skinTone: "",
-    income: 0,
-    bodyCount: "",
-    cooking: "",
-    job: "",
+    caste: formConfig.caste[0].value, // Only the value "Brahmin"
+  education: formConfig.education[0].value, // Only the value "Masters"
+  skinTone: formConfig.skinTone[0].value, // Only the value "Fair"
+  income: 0,
+  bodyCount: formConfig.bodyCount[0].value, // Only the value "0"
+  cooking: formConfig.cooking[0].value, // Only the value "Yes"
+  job: formConfig.job[0].value, // Only the value "Private"
+  
   };
   const dulhaForm = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -76,18 +78,17 @@ export default function ParentPage() {
     dulhaScore +=
       dulhaData.education === "PhD"
         ? 10000
-        : dulhaData.education === "Master's"
+        : dulhaData.education === "Masters"
         ? 5000
         : 0;
     dulhaScore += Number(dulhaData.income) * 5000;
     dulhaScore +=
-      dulhaData.cooking === "Biryani Master"
+      dulhaData.cooking === "Yes"
         ? 2000
-        : dulhaData.cooking === "Zomato expert"
-        ? -1000
-        : 0;
-    dulhaScore -= Number(2)! * 500;
-    dulhaScore += dulhaData.job === "Software Engineer" ? 8000 : 4000;
+        : -1000
+     
+    dulhaScore -= Number(dulhaData.bodyCount)! * 500;
+    dulhaScore += dulhaData.job === "Government" ? 8000 : 4000;
 
     // Dulhan Score
     let dulhanScore = 0;
@@ -103,7 +104,7 @@ export default function ParentPage() {
     dulhanScore +=
       dulhanData.education === "PhD"
         ? 10000
-        : dulhanData.education === "Master's"
+        : dulhanData.education === "Masters"
         ? 5000
         : 0;
     dulhanScore +=
@@ -112,9 +113,9 @@ export default function ParentPage() {
         : dulhanData.skinTone === "Medium"
         ? 1500
         : 0;
-    dulhanScore += dulhanData.cooking === "Full Thali Master" ? 5000 : -1000;
-    dulhanScore -= Number(2)! * 1000;
-    dulhanScore += dulhanData.job === "Software Engineer" ? 8000 : 4000;
+    dulhanScore += dulhanData.cooking === "Yes" ? 5000 : -1000;
+    dulhanScore -=  Number(dulhaData.bodyCount)! * 1000;
+    dulhanScore += dulhanData.job === "Government" ? 8000 : 4000;
 
     // Final Dahej Calculation
     console.log("dulhaScore", dulhaScore);
@@ -207,7 +208,9 @@ export default function ParentPage() {
                 <h2 className="text-white text-xl font-semibold mb-6">
                   Dulha Details
                 </h2>
-                <RenderFormFields form={dulhaForm} />
+                <div className="grid grid-cols-2 gap-6">
+                  <RenderFormFields form={dulhaForm} />
+                </div>
               </form>
             </Form>
 
@@ -217,7 +220,10 @@ export default function ParentPage() {
                 <h2 className="text-white text-xl font-semibold mb-6">
                   Dulhan Details
                 </h2>
-                <RenderFormFields form={dulhanForm} />
+
+                <div className="grid grid-cols-2 gap-6">
+                  <RenderFormFields form={dulhanForm} />
+                </div>
               </form>
             </Form>
 
@@ -229,7 +235,7 @@ export default function ParentPage() {
             className="w-full bg-[#FF7B54] text-white hover:bg-[#FF6B3D] text-lg font-semibold py-6"
             onClick={handleMatch}
           >
-            Find Perfect Match
+            Calculate Dahej
           </Button>
         </div>
       </div>
@@ -316,9 +322,11 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Brahmin">Brahmin</SelectItem>
-              <SelectItem value="Kshatriya">Kshatriya</SelectItem>
-              <SelectItem value="Vaishya">Vaishya</SelectItem>
+              {formConfig.caste.map((caste) => (
+                <SelectItem key={caste.value} value={caste.value}>
+                  {caste.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />
@@ -338,16 +346,17 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Masters">Masters</SelectItem>
-              <SelectItem value="Bachelors">Bachelors</SelectItem>
-              <SelectItem value="PhD">PhD</SelectItem>
+              {formConfig.education.map((education) => (
+                <SelectItem key={education.value} value={education.value}>
+                  {education.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />
         </FormItem>
       )}
     />
-
     <FormField
       control={form.control}
       name="skinTone"
@@ -361,9 +370,11 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Fair">Fair</SelectItem>
-              <SelectItem value="Medium">Medium</SelectItem>
-              <SelectItem value="Dark">Dark</SelectItem>
+              {formConfig.skinTone.map((tone) => (
+                <SelectItem key={tone.value} value={tone.value}>
+                  {tone.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />
@@ -403,16 +414,17 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="0">0 📈</SelectItem>
-              <SelectItem value="1-3">1-3 💸</SelectItem>
-              <SelectItem value="4+">4+ 📉</SelectItem>
+              {formConfig.bodyCount.map((count) => (
+                <SelectItem key={count.value} value={count.value}>
+                  {count.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />
         </FormItem>
       )}
     />
-
     <FormField
       control={form.control}
       name="cooking"
@@ -426,15 +438,17 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Yes">Yes</SelectItem>
-              <SelectItem value="No">No</SelectItem>
+              {formConfig.cooking.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />
         </FormItem>
       )}
     />
-
     <FormField
       control={form.control}
       name="job"
@@ -448,10 +462,11 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Private">Private</SelectItem>
-              <SelectItem value="Government">Government</SelectItem>
-              <SelectItem value="Business">Business</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
+              {formConfig.job.map((job) => (
+                <SelectItem key={job.value} value={job.value}>
+                  {job.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />
