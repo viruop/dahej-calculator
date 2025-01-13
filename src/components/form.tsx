@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "@/schemas/formSchema";
 import { FormValues } from "@/types/index";
@@ -132,9 +132,9 @@ export default function ParentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FF7B54] flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      {/* Background SVG Elements */}
-      <div className="absolute inset-0 overflow-hidden">
+    <div className="w-full h-[90vh] relative">
+      {/* First Section as background */}
+      <div className=" rounded-2xl border-2 bg-white absolute inset-0 overflow-hidden z-0">
         {/* Top left running figure */}
         <div className="absolute -left-4 top-1/4 transform -rotate-12">
           <svg
@@ -183,27 +183,21 @@ export default function ParentPage() {
 
         {/* Floating boxes */}
         {/* {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-8 h-8 bg-[#FFD6C9] opacity-20 rounded-lg transform rotate-45 animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${i * 0.5}s`,
-              animationDuration: `${4 + Math.random() * 2}s`,
-            }}
-          />
-        ))} */}
+      <div
+        key={i}
+        className="absolute w-8 h-8 bg-[#FFD6C9] opacity-20 rounded-lg transform rotate-45 animate-float"
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          animationDelay: `${i * 0.5}s`,
+          animationDuration: `${4 + Math.random() * 2}s`,
+        }}
+      />
+    ))} */}
       </div>
 
-      <h1 className="text-4xl font-bold text-white mb-2 relative z-10">
-        Dahej Calculator
-      </h1>
-      <p className="text-white mb-12 relative z-10">
-        Fill in your preferences and let us find your soulmate
-      </p>
-
-      <div className="relative z-10 w-full max-w-6xl">
+      {/* Second Section */}
+      <div className="w-[90%] h-full relative top-40 z-10 mx-auto rounded-xl bg-rose-200 shadow-sm">
         {/* Main dark form section */}
         <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
           <div className="grid md:grid-cols-2 gap-8">
@@ -230,7 +224,7 @@ export default function ParentPage() {
             {/* Match Button */}
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-lg">
+        <div className="p-6 rounded-xl">
           <Button
             className="w-full bg-[#FF7B54] text-white hover:bg-[#FF6B3D] text-lg font-semibold py-6"
             onClick={handleMatch}
@@ -239,12 +233,20 @@ export default function ParentPage() {
           </Button>
         </div>
       </div>
+
+      {/* Header and Description */}
+      <div className="absolute top-[10%] w-full text-center z-10">
+        <h1 className="text-4xl font-bold text-black mb-2">Dahej Calculator</h1>
+        <p className="text-black mb-12">
+          Fill in your preferences and let us find your soulmate
+        </p>
+      </div>
     </div>
   );
 }
 
 // RenderFormFields Component - A reusable function to render form fields
-const RenderFormFields = ({ form }: { form: any }) => (
+const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
   <>
     <FormField
       control={form.control}
