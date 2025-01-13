@@ -44,8 +44,8 @@ export const formConfig = {
     "skinTone",
     "bodyCount",
     "cooking",
-    "job",
     "income",
     "snapscore",
+    "job",
   ] as const,
 };

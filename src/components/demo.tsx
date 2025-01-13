@@ -25,8 +25,7 @@ import { Slider } from "@/components/ui/slider";
 import { formConfig } from "@/lib/config";
 import SparklesText from "@/components/ui/sparkles-text";
 import { BackgroundBeams } from "./ui/background-beams";
-
-export default function ParentPage() {
+export function BackgroundBeamsDemo() {
   const defaultValues: FormValues = {
     name: "",
     age: 18,
@@ -121,54 +120,8 @@ export default function ParentPage() {
   const onSubmitDulhan = (data: FormValues) => {
     console.log("Dulhan Form Submitted:", data);
   };
-
   return (
-    <div className="w-full h-[90vh] relative">
-      <div className="rounded-2xl border-2 bg-white absolute inset-0 overflow-hidden z-0">
-        <div className="absolute -left-4 top-1/4 transform -rotate-12">
-          <svg
-            width="120"
-            height="120"
-            viewBox="0 0 120 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M60 10C60 10 80 30 80 60C80 90 60 110 60 110"
-              stroke="#FFD6C9"
-              strokeWidth="4"
-            />
-            <circle cx="60" cy="30" r="15" fill="#FFD6C9" />
-            <path
-              d="M50 50L70 70M70 50L50 70"
-              stroke="#FFD6C9"
-              strokeWidth="4"
-            />
-          </svg>
-        </div>
-        <div className="absolute right-10 bottom-1/4 transform rotate-45">
-          <svg
-            width="120"
-            height="120"
-            viewBox="0 0 120 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M60 10C60 10 80 30 80 60C80 90 60 110 60 110"
-              stroke="#FFD6C9"
-              strokeWidth="4"
-            />
-            <circle cx="60" cy="30" r="15" fill="#FFD6C9" />
-            <path
-              d="M50 50L70 70M70 50L50 70"
-              stroke="#FFD6C9"
-              strokeWidth="4"
-            />
-          </svg>
-        </div>
-      </div>
-
+    <div className="h-[40rem] w-full rounded-md bg-rose-200 relative flex flex-col items-center justify-center antialiased">
       <div className="w-[90%] h-full relative top-40 z-10 mx-auto rounded-xl bg-rose-200 shadow-sm">
         <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
           <div className="grid md:grid-cols-2 gap-8">
