@@ -30,7 +30,7 @@ export const TextRevealCard = ({
     }
   }, []);
 
-  function mouseMoveHandler(event: any) {
+  function mouseMoveHandler(event:  React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
 
     const { clientX } = event;
