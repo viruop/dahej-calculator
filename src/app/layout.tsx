@@ -25,9 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-slate-50 antialiased`}
       >
-        {children}
+        <div vaul-drawer-wrapper="">{children}</div>
       </body>
     </html>
   );

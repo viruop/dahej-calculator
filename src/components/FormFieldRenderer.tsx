@@ -68,15 +68,20 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
       </FormLabel>
       <FormControl>
         {name === "income" || name === "snapscore" ? (
-          <Slider
-            onValueChange={(value: number[]) =>
-              field.onChange(value[0] as FormValues[T])
-            }
-            defaultValue={[typeof field.value === "number" ? field.value : 0]}
-            max={100}
-            step={1}
-            className="bg-[#1E293B]"
-          />
+         <div>
+         <Slider
+           onValueChange={(value: number[]) =>
+             field.onChange(value[0] as FormValues[T])
+           }
+           defaultValue={[typeof field.value === "number" ? field.value : 0]}
+           max={100}
+           step={1}
+           className="bg-[#1E293B]"
+         />
+         <p className="text-sm text-gray-400 mt-2">
+          {field.value}K
+         </p>
+       </div>
         ) : isSelectField(name) ? (
           <Select
             onValueChange={(value: string) =>
@@ -100,7 +105,11 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
         ) : (
           <Input
             className="bg-[#1E293B] text-white border-0"
-            placeholder={`Enter ${name}`}
+            placeholder={
+                name === "height"
+                  ? `Enter height (e.g. 5.8 for 5'8")`
+                  : `Enter ${name}`
+              }
             type={name === "age" ? "number" : "text"}
             value={field.value as string | number}
             onChange={handleInputChange}
