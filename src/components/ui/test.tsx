@@ -122,7 +122,7 @@ const SparklesText: React.FC<SparklesTextProps> = ({
     }
   }, []);
 
-  function mouseMoveHandler(event: any) {
+  function mouseMoveHandler(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
 
     const { clientX } = event;
