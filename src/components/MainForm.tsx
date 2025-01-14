@@ -4,28 +4,12 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "@/schemas/formSchema";
 import { FormValues } from "@/types/index";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { formConfig } from "@/lib/config";
-import SparklesText from "@/components/ui/sparkles-text";
-import { BackgroundBeams } from "./ui/background-beams";
-export function BackgroundBeamsDemo() {
+import { FormFieldRenderer } from "./FormFieldRenderer";
+
+export default function MainForm() {
   const defaultValues: FormValues = {
     name: "",
     age: 18,
@@ -120,40 +104,30 @@ export function BackgroundBeamsDemo() {
   const onSubmitDulhan = (data: FormValues) => {
     console.log("Dulhan Form Submitted:", data);
   };
+
   return (
-    <div className="h-[40rem] w-full rounded-2xl shadow-2xl bg-slate-50  relative flex flex-col items-center justify-center antialiased">
-      <div className="w-[90%] h-full relative top-40 z-10 mx-auto">
-        <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Dulha and Dulhan forms */}
-            {["Dulha", "Dulhan"].map((role) => (
-              <FormComponent
-                key={role}
-                form={role === "Dulha" ? dulhaForm : dulhanForm}
-                role={role}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="p-6 rounded-xl">
-          <Button
-            className="w-full bg-[#FF7B54] text-white hover:bg-[#FF6B3D] text-lg font-semibold py-6"
-            onClick={handleMatch}
-          >
-            Calculate Dahej
-          </Button>
+    <div className="w-[90%] h-full relative top-40 z-10 mx-auto ">
+      <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Dulha and Dulhan forms */}
+          {["Dulha", "Dulhan"].map((role) => (
+            <FormComponent
+              key={role}
+              form={role === "Dulha" ? dulhaForm : dulhanForm}
+              role={role}
+            />
+          ))}
         </div>
       </div>
 
-      <div className="absolute top-[10%] w-full text-center z-10">
-        {/* <h1 className="text-4xl font-bold text-black mb-2"> */}
-        <SparklesText text="Dahej" secondText="Calculator" /> {/* </h1> */}
-        {/* <p className="text-black text-4xl font-bold mb-12">
-          Fill in your preferences and let us find your soulmate
-        </p> */}
+      <div className="p-6 rounded-xl">
+        <Button
+          className="w-full bg-[#FF7B54] text-white hover:bg-[#FF6B3D] text-lg font-semibold py-6"
+          onClick={handleMatch}
+        >
+          Calculate Dahej
+        </Button>
       </div>
-      <BackgroundBeams />
     </div>
   );
 }
@@ -189,50 +163,3 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
     ))}
   </>
 );
-
-const FormFieldRenderer = ({ field, name }: { field: any; name: string }) => (
-  <FormItem>
-    <FormLabel className="text-white">{capitalizeFirstLetter(name)}</FormLabel>
-    <FormControl>
-      {name === "income" || name === "snapscore" ? (
-        <Slider
-          onValueChange={(value) => field.onChange(value[0])}
-          defaultValue={[field.value || 0]}
-          max={100}
-          step={1}
-          className="bg-[#1E293B]"
-        />
-      ) : name === "caste" ||
-        name === "education" ||
-        name === "skinTone" ||
-        name === "bodyCount" ||
-        name === "job" ||
-        name === "cooking" ? (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl>
-            <SelectTrigger className="bg-[#1E293B] text-white border-0">
-              <SelectValue placeholder={`Select ${name}`} />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            {formConfig[name]?.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      ) : (
-        <Input
-          {...field}
-          className="bg-[#1E293B] text-white border-0"
-          placeholder={`Enter ${name}`}
-        />
-      )}
-    </FormControl>
-    <FormMessage />
-  </FormItem>
-);
-
-const capitalizeFirstLetter = (string: string) =>
-  string.charAt(0).toUpperCase() + string.slice(1);
