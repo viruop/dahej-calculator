@@ -121,8 +121,8 @@ export function BackgroundBeamsDemo() {
     console.log("Dulhan Form Submitted:", data);
   };
   return (
-    <div className="h-[40rem] w-full rounded-md bg-rose-200 relative flex flex-col items-center justify-center antialiased">
-      <div className="w-[90%] h-full relative top-40 z-10 mx-auto rounded-xl bg-rose-200 shadow-sm">
+    <div className="h-[40rem] w-full rounded-2xl shadow-2xl bg-slate-50  relative flex flex-col items-center justify-center antialiased">
+      <div className="w-[90%] h-full relative top-40 z-10 mx-auto">
         <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Dulha and Dulhan forms */}
@@ -149,9 +149,9 @@ export function BackgroundBeamsDemo() {
       <div className="absolute top-[10%] w-full text-center z-10">
         {/* <h1 className="text-4xl font-bold text-black mb-2"> */}
         <SparklesText text="Dahej" secondText="Calculator" /> {/* </h1> */}
-        <p className="text-black text-4xl font-bold mb-12">
+        {/* <p className="text-black text-4xl font-bold mb-12">
           Fill in your preferences and let us find your soulmate
-        </p>
+        </p> */}
       </div>
       <BackgroundBeams />
     </div>
@@ -181,7 +181,6 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
       <FormField
         key={field}
         control={form.control}
-        //@ts-ignore
         name={field}
         render={({ field }) => (
           <FormFieldRenderer field={field} name={field.name} />

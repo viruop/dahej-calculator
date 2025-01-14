@@ -8,6 +8,10 @@ body {
 
 @layer base {
   :root {
+    --neutral-300: #6e6e6e;  /* Light mode */
+    --neutral-300-dark: #636363;  /* Dark mode */
+    --primary-light: #18CCFC;  /* Lighter color for light theme */
+    --primary-dark: #18CCFC;   /* Darker color for dark theme */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -62,11 +66,20 @@ body {
   }
 }
 
-/* @layer base {
+@layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
-} */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --neutral-300: var(--neutral-300-dark);
+    --primary-light: var(--primary-dark);
+    --secondary-light: var(--secondary-dark);
+    --accent-light: var(--accent-dark);
+  }
+}

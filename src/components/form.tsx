@@ -228,7 +228,6 @@ const RenderFormFields = ({ form }: { form: UseFormReturn<FormValues> }) => (
       <FormField
         key={field}
         control={form.control}
-        //@ts-ignore
         name={field}
         render={({ field }) => (
           <FormFieldRenderer field={field} name={field.name} />
