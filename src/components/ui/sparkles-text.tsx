@@ -1,9 +1,16 @@
 "use client";
 
-import { CSSProperties, ReactElement, useEffect, useState } from "react";
+import {
+  CSSProperties,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { motion } from "motion/react";
 
 import { cn } from "@/lib/utils";
+import React from "react";
 
 interface Sparkle {
   id: string;
@@ -64,7 +71,7 @@ interface SparklesTextProps {
 const SparklesText: React.FC<SparklesTextProps> = ({
   text,
   secondText,
-  colors = { first:  "#F0B297", second: "#959595" },
+  colors = { first: "#F0B297", second: "#959595" },
   className,
   sparklesCount = 5,
   ...props
@@ -106,6 +113,52 @@ const SparklesText: React.FC<SparklesTextProps> = ({
     return () => clearInterval(interval);
   }, [colors.first, colors.second, sparklesCount]);
 
+  const [widthPercentage, setWidthPercentage] = useState(0);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const [left, setLeft] = useState(0);
+  const [localWidth, setLocalWidth] = useState(0);
+  const [isMouseOver, setIsMouseOver] = useState(false);
+
+  useEffect(() => {
+    if (cardRef.current) {
+      const { left, width: localWidth } =
+        cardRef.current.getBoundingClientRect();
+      setLeft(left);
+      setLocalWidth(localWidth);
+    }
+  }, []);
+
+  function mouseMoveHandler(
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) {
+    event.preventDefault();
+
+    const { clientX } = event;
+    if (cardRef.current) {
+      const relativeX = clientX - left;
+      // Add a small buffer to the percentage calculation
+      setWidthPercentage(Math.min(105, (relativeX / localWidth) * 100));
+    }
+  }
+
+  function mouseLeaveHandler() {
+    setIsMouseOver(false);
+    setWidthPercentage(0);
+  }
+  function mouseEnterHandler() {
+    setIsMouseOver(true);
+  }
+  function touchMoveHandler(event: React.TouchEvent<HTMLDivElement>) {
+    event.preventDefault();
+    const clientX = event.touches[0]!.clientX;
+    if (cardRef.current) {
+      const relativeX = clientX - left;
+      setWidthPercentage((relativeX / localWidth) * 100);
+    }
+  }
+
+  const rotateDeg = (widthPercentage - 50) * 0.1;
+
   return (
     <div
       className={cn("text-4xl md:text-6xl space-x-4 font-bold", className)}
@@ -121,7 +174,66 @@ const SparklesText: React.FC<SparklesTextProps> = ({
         {sparkles.map((sparkle) => (
           <Sparkle key={sparkle.id} {...sparkle} />
         ))}
-        <strong>{text}</strong>
+        <div
+          onMouseEnter={mouseEnterHandler}
+          onMouseLeave={mouseLeaveHandler}
+          onMouseMove={mouseMoveHandler}
+          onTouchStart={mouseEnterHandler}
+          onTouchEnd={mouseLeaveHandler}
+          onTouchMove={touchMoveHandler}
+          ref={cardRef}
+        >
+          <motion.div
+            style={{
+              width: "110%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center", // This ensures vertical centering
+            }}
+            initial={false}
+            animate={
+              isMouseOver
+                ? {
+                    opacity: widthPercentage > 0 ? 1 : 0,
+                    // Add a small buffer (e.g., 5%) to prevent cutting off the last letter
+                    clipPath: `inset(0 ${Math.max(
+                      0,
+                      95 - widthPercentage
+                    )}% 0 0)`,
+                  }
+                : {
+                    clipPath: `inset(0 ${100 - widthPercentage}% 0 0)`,
+                  }
+            }
+            transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
+            className="absolute bg-[#1d1c20] z-20 will-change-transform"
+          >
+            <p className="font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-300">
+              <strong>{"Tagda"}</strong>
+            </p>
+          </motion.div>
+          <motion.div
+            animate={{
+              left: `${widthPercentage}%`,
+              rotate: `${rotateDeg}deg`,
+              opacity: widthPercentage > 0 ? 1 : 0,
+            }}
+            initial={false}
+            transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
+            className=" w-[8px] bg-gradient-to-b from-transparent via-neutral-800 to-transparent absolute z-50 will-change-transform"
+          ></motion.div>
+          <motion.div
+            animate={{
+              opacity: widthPercentage > 0 ? 0 : 1,
+              scale: widthPercentage > 0 ? 0.95 : 1,
+              y: widthPercentage > 0 ? -10 : 0,
+            }}
+            initial={false}
+            transition={{ duration: 0.2 }}
+          >
+            <strong>{text}</strong>
+          </motion.div>
+        </div>
       </span>
       <strong>{secondText}</strong>
     </div>

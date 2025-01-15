@@ -153,8 +153,8 @@ export default function MainForm() {
   };
 
   return (
-    <div className="w-[90%]  h-full relative top-40 z-10 mx-auto ">
-      <div className="bg-primary p-8 rounded-2xl shadow-2xl mb-2">
+    <div className="w-[90%] -mt-[10%] md:mt-0 shadow-sm h-full  relative top-40 z-10 mx-auto ">
+      <div className="bg-gradient-to-b from-[#EFF0F4] to-[#FBF6F2] p-8 rounded-2xl border-2 border-white  mb-2">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Dulha and Dulhan forms */}
           {["Dulha", "Dulhan"].map((role) => (
@@ -210,7 +210,7 @@ const FormComponent = ({
 }) => (
   <Form {...form}>
     <form className="space-y-6">
-      <h2 className=" text-xl font-semibold mb-6">{`${role} Details`}</h2>
+      <h2 className=" tracking-tight text-xl font-semibold mb-6">{`${role} Details`}</h2>
       <div className="grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2">
       <RenderFormFields form={form} />
     </div>
