@@ -88,7 +88,7 @@ export default function MainForm() {
 
   const calculateDahej = (dulhaData: FormValues, dulhanData: FormValues) => {
     const dulhaScore = calculateScore(dulhaData, "dulha");
-    const dulhanScore = calculateScore(dulhanData, "dulhan");
+    // const dulhanScore = calculateScore(dulhanData, "dulhan");
     const dahejAmount = dulhaScore;
 
     return dahejAmount;
