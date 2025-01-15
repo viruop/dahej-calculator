@@ -194,7 +194,7 @@ const SparklesText: React.FC<SparklesTextProps> = ({
                   //  style={{
                   //    textShadow: "4px 4px 15px rgba(0,0,0,0.5)",
                   //  }}
-                   className=" py-10 font-bold text-white bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-300"
+                   className=" py-10 font-bold  bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-300"
                  >
                    <strong>{"Tagda"}</strong>
                  </p>

@@ -63,7 +63,7 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
 
   return (
     <FormItem>
-      <FormLabel className="text-white">
+      <FormLabel>
         {capitalizeFirstLetter(name)}
       </FormLabel>
       <FormControl>
@@ -76,9 +76,9 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
            defaultValue={[typeof field.value === "number" ? field.value : 0]}
            max={100}
            step={1}
-           className="bg-[#1E293B]"
+           className="bg-secondary"
          />
-         <p className="text-sm text-gray-400 mt-2">
+         <p className="text-sm mt-2">
           {field.value}K
          </p>
        </div>
@@ -90,7 +90,7 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
             defaultValue={String(field.value)}
           >
             <FormControl>
-              <SelectTrigger className="bg-[#1E293B] text-white border-0">
+              <SelectTrigger className="bg-[#F1E9E4]">
                 <SelectValue placeholder={`Select ${name}`} />
               </SelectTrigger>
             </FormControl>
@@ -104,7 +104,7 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
           </Select>
         ) : (
           <Input
-            className="bg-[#1E293B] text-white border-0"
+            className="bg-[#F1E9E4]"
             placeholder={
                 name === "height"
                   ? `Enter height (e.g. 5.8 for 5'8")`

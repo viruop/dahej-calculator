@@ -153,8 +153,8 @@ export default function MainForm() {
   };
 
   return (
-    <div className="w-[90%] h-full relative top-40 z-10 mx-auto ">
-      <div className="bg-[#0F172A] p-8 rounded-2xl shadow-2xl mb-4">
+    <div className="w-[90%]  h-full relative top-40 z-10 mx-auto ">
+      <div className="bg-primary p-8 rounded-2xl shadow-2xl mb-2">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Dulha and Dulhan forms */}
           {["Dulha", "Dulhan"].map((role) => (
@@ -172,7 +172,7 @@ export default function MainForm() {
           onClick={(e) => handleMatch(e)}
           className="shadow-2xl"
         >
-          <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+          <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight  dark:from-white dark:to-slate-900/10 lg:text-lg">
             Calculate Dahej
           </span>
         </ShimmerButton>
@@ -210,7 +210,7 @@ const FormComponent = ({
 }) => (
   <Form {...form}>
     <form className="space-y-6">
-      <h2 className="text-white text-xl font-semibold mb-6">{`${role} Details`}</h2>
+      <h2 className=" text-xl font-semibold mb-6">{`${role} Details`}</h2>
       <div className="grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2">
       <RenderFormFields form={form} />
     </div>
