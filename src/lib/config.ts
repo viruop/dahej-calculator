@@ -5,6 +5,7 @@ export const formConfig = {
     { value: "Kshatriya", label: "Kshatriya ⚔️" },
     { value: "Bhumihar", label: "Bhumihar 🏞️" },
     { value: "Yadav", label: "Yadav 🐄" },
+    { value: "General", label: "General 🐄" },
     { value: "Odiya", label: "Odiya 🌾" },
     { value: "SC/ST", label: "SC/ST ✊" },
   ] as const,

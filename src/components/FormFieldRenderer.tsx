@@ -63,25 +63,21 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
 
   return (
     <FormItem>
-      <FormLabel>
-        {capitalizeFirstLetter(name)}
-      </FormLabel>
+      <FormLabel>{capitalizeFirstLetter(name)}</FormLabel>
       <FormControl>
         {name === "income" || name === "snapscore" ? (
-         <div>
-         <Slider
-           onValueChange={(value: number[]) =>
-             field.onChange(value[0] as FormValues[T])
-           }
-           defaultValue={[typeof field.value === "number" ? field.value : 0]}
-           max={100}
-           step={1}
-           className="bg-secondary"
-         />
-         <p className="text-sm mt-2">
-          {field.value}K
-         </p>
-       </div>
+          <div>
+            <Slider
+              onValueChange={(value: number[]) =>
+                field.onChange(value[0] as FormValues[T])
+              }
+              defaultValue={[typeof field.value === "number" ? field.value : 0]}
+              max={100}
+              step={1}
+              className="bg-secondary"
+            />
+            <p className="text-sm mt-2">{field.value}K</p>
+          </div>
         ) : isSelectField(name) ? (
           <Select
             onValueChange={(value: string) =>
@@ -90,7 +86,7 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
             defaultValue={String(field.value)}
           >
             <FormControl>
-              <SelectTrigger className="bg-[#F1E9E4]">
+              <SelectTrigger>
                 <SelectValue placeholder={`Select ${name}`} />
               </SelectTrigger>
             </FormControl>
@@ -104,12 +100,11 @@ export const FormFieldRenderer = <T extends keyof FormValues>({
           </Select>
         ) : (
           <Input
-            className="bg-[#F1E9E4]"
             placeholder={
-                name === "height"
-                  ? `Enter height (e.g. 5.8 for 5'8")`
-                  : `Enter ${name}`
-              }
+              name === "height"
+                ? `Enter height (e.g. 5.8 for 5'8")`
+                : `Enter ${name}`
+            }
             type={name === "age" ? "number" : "text"}
             value={field.value as string | number}
             onChange={handleInputChange}

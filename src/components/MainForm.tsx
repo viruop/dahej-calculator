@@ -10,9 +10,12 @@ import { FormFieldRenderer } from "./FormFieldRenderer";
 import ShimmerButton from "./ui/shimmer-button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "./ui/drawer";
 import { useState } from "react";
+import NumberTicker from "./ui/number-ticker";
 
 export default function MainForm() {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [message, setMessage] = useState("");
+  const [dahejAmount, setDahejAmount] = useState(0);
   const defaultValues: FormValues = {
     name: "",
     age: 18,
@@ -21,6 +24,7 @@ export default function MainForm() {
     education: formConfig.education[0].value,
     skinTone: formConfig.skinTone[0].value,
     income: 0,
+    snapscore: 0,
     bodyCount: formConfig.bodyCount[0].value,
     cooking: formConfig.cooking[0].value,
     job: formConfig.job[0].value,
@@ -36,34 +40,37 @@ export default function MainForm() {
     defaultValues,
   });
 
-  const handleMatch = (e: React.FormEvent) => {
+  const handleMatch = async (e: React.FormEvent) => {
     e.preventDefault();
-   // Check if both forms are valid
-   const isDulhaFormValid = dulhaForm.formState.isValid;
-   const isDulhanFormValid = dulhanForm.formState.isValid;
+    await Promise.all([dulhaForm.trigger(), dulhanForm.trigger()]);
 
-   if (isDulhaFormValid && isDulhanFormValid) {
-       const dulhaData = dulhaForm.getValues();
-       const dulhanData = dulhanForm.getValues();
+    const isDulhaFormValid = dulhaForm.formState.isValid;
+    const isDulhanFormValid = dulhanForm.formState.isValid;
+    if (isDulhaFormValid && isDulhanFormValid) {
+      const dulhaData = dulhaForm.getValues();
+      const dulhanData = dulhanForm.getValues();
 
-       const dahejAmount = calculateDahej(dulhaData, dulhanData);
-       console.log("Final Dahej Amount:", dahejAmount);
+      const dahejAmount = calculateDahej(dulhaData, dulhanData);
+      console.log("Final Dahej Amount:", dahejAmount);
+      setDahejAmount(dahejAmount);
+      // Get the dynamic funny message based on dahejAmount
+      const funnyMessage = getFunnyMessage(dahejAmount);
+      setMessage(funnyMessage);
+      // Only open the drawer if both forms are valid
+      setOpenDrawer(true);
 
-       // Only open the drawer if both forms are valid
-       setOpenDrawer(true);
-
-       // Handle form submission for both forms
-       dulhaForm.handleSubmit(onSubmitDulha)();
-       dulhanForm.handleSubmit(onSubmitDulhan)();
-   } else {
-    dulhaForm.handleSubmit(onSubmitDulha)();
-    dulhanForm.handleSubmit(onSubmitDulhan)();
-       // Optionally, you can show an error message or handle invalid form case here
-       console.log("Please fill out both forms correctly.");
-   }
+      // Handle form submission for both forms
+      dulhaForm.handleSubmit(onSubmitDulha)();
+      dulhanForm.handleSubmit(onSubmitDulhan)();
+    } else {
+      dulhaForm.handleSubmit(onSubmitDulha)();
+      dulhanForm.handleSubmit(onSubmitDulhan)();
+      // Optionally, you can show an error message or handle invalid form case here
+      console.log("Please fill out both forms correctly.");
+    }
   };
 
-  const getFunnyMessage = (dahejAmount : number) => {
+  const getFunnyMessage = (dahejAmount: number) => {
     if (dahejAmount < 1000000) {
       return "Bhai, is dahej se tum ek chhoti si car aur ek local plot khareed sakte ho!";
     } else if (dahejAmount < 5000000) {
@@ -82,67 +89,63 @@ export default function MainForm() {
   const calculateDahej = (dulhaData: FormValues, dulhanData: FormValues) => {
     const dulhaScore = calculateScore(dulhaData, "dulha");
     const dulhanScore = calculateScore(dulhanData, "dulhan");
-  
-    const dahejAmount = Math.max(dulhaScore - dulhanScore, 0) + 500000;
-  
-    // Get the dynamic funny message based on dahejAmount
-    const funnyMessage = getFunnyMessage(dahejAmount);
-  
-    console.log(`Dahej Amount: ₹${dahejAmount}`);
-    console.log(funnyMessage);
-  
+    const dahejAmount = dulhaScore;
+
     return dahejAmount;
   };
 
   const calculateScore = (data: FormValues, type: string) => {
-    let score = 0;
+    let score = 500000;
 
     // Age-based scoring
     if (type === "dulha") {
-        score += data.age! > 35 ? -1000 : 0;   // Older dulhas may have lower dowry expectations
-    } else { // dulhan
-        if (data.age! < 25) score += 5000;       // Younger dulhans typically have higher dowry expectations
-        if (data.age! > 30) score -= 1000;       // Older dulhans might face a slight reduction in dowry expectations
+      score += data.age! > 35 ? -1000 : 0; // Older dulhas may have lower dowry expectations
+    } else {
+      // dulhan
+      if (data.age! < 25) score += 5000; // Younger dulhans typically have higher dowry expectations
+      if (data.age! > 30) score -= 1000; // Older dulhans might face a slight reduction in dowry expectations
     }
 
     // Height-based scoring
     if (type === "dulha") {
-        score += Number(data?.height) > 6 ? 2000 : 0; // Taller dulhas typically have higher dowry expectations
+      score += Number(data?.height) > 6 ? 2000 : 0; // Taller dulhas typically have higher dowry expectations
     } else {
-        score += Number(data.height!) > 5.5 ? 2000 : 0; // Taller dulhans also may have higher expectations
+      score += Number(data.height!) > 5.5 ? 2000 : 0; // Taller dulhans also may have higher expectations
     }
 
     // Caste-based scoring (with more nuanced caste system)
-    if (data.caste === "Brahmin") score += 3000;     // Brahmin caste may have higher dowry expectations
-    if (data.caste === "Kshatriya") score += 2000;   // Kshatriya caste also adds to dowry expectations
-    if (data.caste === "Yadav" || data.caste === "Bhumihar") score += 1000; // Yadav/Bhumihar caste adds moderate expectations
-    if (data.caste === "SC/ST") score -= 3000;        // SC/ST may face lower dowry expectations due to social dynamics
+    if (data.caste === "Brahmin") score += 3000; // Brahmin caste may have higher dowry expectations
+    if (data.caste === "Kshatriya") score += 2000; // Kshatriya caste also adds to dowry expectations
+    if (data.caste === "Bhumihar") score += 18000; // Kshatriya caste also adds to dowry expectations
+
+    if (data.caste === "Yadav" || data.caste === "General") score += 1000; // Yadav/Bhumihar caste adds moderate expectations
+    if (data.caste === "SC/ST") score -= 3000; // SC/ST may face lower dowry expectations due to social dynamics
 
     // Education-based scoring
-    if (data.education === "PhD") score += 10000;     // PhD holders are seen as higher value
-    if (data.education === "Masters") score += 5000;   // Masters degrees also increase dowry expectations
+    if (data.education === "PhD") score += 10000; // PhD holders are seen as higher value
+    if (data.education === "Masters") score += 5000; // Masters degrees also increase dowry expectations
     if (data.education === "Bachelors") score += 3000; // Bachelors increase expectations moderately
     if (data.education === "12th Pass") score += 1000; // Minimal increase for 12th pass
 
     // Skin tone-based scoring (traditional but we limit impact)
     if (type === "dulhan") {
-        if (data.skinTone === "Fair") score += 3000;  // Fair skin typically increases dowry expectations
-        if (data.skinTone === "Medium") score += 1500; // Medium skin tone moderately increases dowry expectations
+      if (data.skinTone === "Fair") score += 3000; // Fair skin typically increases dowry expectations
+      if (data.skinTone === "Medium") score += 1500; // Medium skin tone moderately increases dowry expectations
     }
 
     // Cooking ability
     score += data.cooking === "Yes" ? 2000 : -1000; // Cooking ability typically adds to expectations
 
     // Body count-based scoring (important in traditional settings)
-    score -= Number(data.bodyCount)! * (type === "dulha" ? 500 : 1000);  // Higher body count lowers dowry expectations
+    score -= Number(data.bodyCount)! * (type === "dulha" ? 500 : 1000); // Higher body count lowers dowry expectations
 
     // Job-based scoring (Government jobs are highly valued)
     score += data.job === "Government" ? 8000 : 4000; // Government jobs tend to significantly raise dowry expectations
-    score += data.job === "Business" ? 6000 : 0;      // Business also raises expectations but slightly less than Government jobs
-    score += data.job === "Private" ? 4000 : 0;       // Private job also contributes moderately
+    score += data.job === "Business" ? 6000 : 0; // Business also raises expectations but slightly less than Government jobs
+    score += data.job === "Private" ? 4000 : 0; // Private job also contributes moderately
 
     return score;
-};
+  };
 
   const onSubmitDulha = (data: FormValues) => {
     console.log("Dulha Form Submitted:", data);
@@ -168,34 +171,30 @@ export default function MainForm() {
       </div>
 
       <div className="p-6 flex justify-center items-center rounded-xl">
-        <ShimmerButton
-          onClick={(e) => handleMatch(e)}
-          className="shadow-2xl"
-        >
+        <ShimmerButton onClick={(e) => handleMatch(e)} className="shadow-2xl">
           <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight  dark:from-white dark:to-slate-900/10 lg:text-lg">
             Calculate Dahej
           </span>
         </ShimmerButton>
       </div>
-
       <Drawer
         onOpenChange={(open) => {
           setOpenDrawer(open);
         }}
         open={openDrawer}
-        shouldScaleBackground
       >
         <DrawerContent>
-          <div className="mx-auto h-[85vh] overflow-auto w-full">
+          <div className="mx-auto h-[85vh] p-6 flex justify-center items-center flex-col overflow-auto w-full">
             <DrawerHeader>
-              <DrawerTitle>Terms And Conditions</DrawerTitle>
+              <DrawerTitle>Dahej Amount</DrawerTitle>
               {/* <DrawerDescription>Set your daily activity goal.</DrawerDescription> */}
             </DrawerHeader>
-            Hello world
+            <p className="whitespace-pre-wrap text-8xl font-medium tracking-tighter text-black dark:text-white">
+              <NumberTicker value={dahejAmount} />
+            </p>
+            <p>{message}</p>
           </div>
-        
         </DrawerContent>
-      
       </Drawer>
     </div>
   );
@@ -212,8 +211,8 @@ const FormComponent = ({
     <form className="space-y-6">
       <h2 className=" tracking-tight text-xl font-semibold mb-6">{`${role} Details`}</h2>
       <div className="grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2">
-      <RenderFormFields form={form} />
-    </div>
+        <RenderFormFields form={form} />
+      </div>
     </form>
   </Form>
 );

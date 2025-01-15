@@ -8,11 +8,11 @@ body {
 
 @layer base {
   :root {
-    --neutral-300: #6e6e6e;  /* Light mode */
-    --neutral-300-dark: #636363;  /* Dark mode */
-    --primary-light: #18CCFC;  /* Lighter color for light theme */
-    --primary-dark: #18CCFC;   /* Darker color for dark theme */
-    
+    --neutral-300: #6e6e6e; /* Light mode */
+    --neutral-300-dark: #636363; /* Dark mode */
+    --primary-light: #18ccfc; /* Lighter color for light theme */
+    --primary-dark: #18ccfc; /* Darker color for dark theme */
+
     --background: 240 60% 99%;
     --foreground: 246 76% 5%;
     --card: 240 60% 99%;
@@ -24,7 +24,8 @@ body {
     --secondary: 0 1% 70%;
     --secondary-foreground: 246 76% 5%;
     --muted: 240 61% 20%;
-    --muted-foreground: 246 76% 5%;
+    --muted-foreground: 0 0% 55%;
+
     --accent: 18 75% 77%;
     --accent-foreground: 246 76% 5%;
     --destructive: 0 85% 60%;
@@ -33,8 +34,6 @@ body {
     --input: 240 61% 20%;
     --ring: 18 75% 40%;
     --radius: 0.5rem;
-
-    
   }
   .dark {
     --background: 240 10% 3.9%;

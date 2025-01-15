@@ -71,7 +71,7 @@ interface SparklesTextProps {
 const SparklesText: React.FC<SparklesTextProps> = ({
   text,
   secondText,
-  colors = { first: "#F0B297", second: "#959595" },
+  colors = { first: "#9E7AFF", second: "#FE8BBB" },
   className,
   sparklesCount = 5,
   ...props
@@ -186,7 +186,7 @@ const SparklesText: React.FC<SparklesTextProps> = ({
           <motion.div
             style={{
               width: "110%",
-              height: "100%",
+              height: "108%",
               display: "flex",
               alignItems: "center", // This ensures vertical centering
             }}
@@ -206,9 +206,9 @@ const SparklesText: React.FC<SparklesTextProps> = ({
                   }
             }
             transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
-            className="absolute bg-[#1d1c20] z-20 will-change-transform"
+            className="absolute bg-primary z-20 will-change-transform"
           >
-            <p className="font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-300">
+            <p className="font-bold bg-clip-text text-black bg-gradient-to-b from-white to-neutral-300">
               <strong>{"Tagda"}</strong>
             </p>
           </motion.div>
@@ -220,9 +220,9 @@ const SparklesText: React.FC<SparklesTextProps> = ({
             }}
             initial={false}
             transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
-            className=" w-[8px] bg-gradient-to-b from-transparent via-neutral-800 to-transparent absolute z-50 will-change-transform"
+            className="h-20 w-[8px] bg-gradient-to-b from-transparent via-neutral-100 to-transparent absolute z-50 will-change-transform"
           ></motion.div>
-          <motion.div
+          {/* <motion.div
             animate={{
               opacity: widthPercentage > 0 ? 0 : 1,
               scale: widthPercentage > 0 ? 0.95 : 1,
@@ -232,7 +232,8 @@ const SparklesText: React.FC<SparklesTextProps> = ({
             transition={{ duration: 0.2 }}
           >
             <strong>{text}</strong>
-          </motion.div>
+          </motion.div> */}
+          <strong>{text}</strong>
         </div>
       </span>
       <strong>{secondText}</strong>

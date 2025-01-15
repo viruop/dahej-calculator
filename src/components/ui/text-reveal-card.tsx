@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, memo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +30,9 @@ export const TextRevealCard = ({
     }
   }, []);
 
-  function mouseMoveHandler(event:  React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function mouseMoveHandler(
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) {
     event.preventDefault();
 
     const { clientX } = event;
@@ -127,11 +129,7 @@ export const TextRevealCardTitle = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  return (
-    <h2 className={twMerge(" text-lg mb-2", className)}>
-      {children}
-    </h2>
-  );
+  return <h2 className={twMerge(" text-lg mb-2", className)}>{children}</h2>;
 };
 
 export const TextRevealCardDescription = ({

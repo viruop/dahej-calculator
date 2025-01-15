@@ -10,9 +10,22 @@ export const formSchema = z.object({
     .number()
     .min(18, "Must be at least 18 years old")
     .max(100, "Invalid age"),
-  height: z.string({
-    required_error: "Height is required",
-  }),
+  height: z
+    .string()
+    .min(1, "Height is required")
+    .regex(/^\d+(\.\d+)?$/, "Height must be like '6' or '5.8'")
+    .refine((val) => {
+      if (val.includes(".")) {
+        const [feet, inches] = val.split(".");
+        const feetNum = parseInt(feet);
+        const inchesNum = parseInt(inches);
+        return (
+          feetNum >= 4 && feetNum <= 7 && inchesNum >= 0 && inchesNum <= 11
+        );
+      }
+      const height = parseInt(val);
+      return height >= 4 && height <= 7;
+    }, "Height must be between 4 and 7 feet"),
   caste: z.enum(toTuple(formConfig.caste.map((item) => item.value)), {
     required_error: "Please select a caste",
   }),
