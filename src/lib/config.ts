@@ -53,7 +53,7 @@ export const formConfig = {
 export const siteConfig = {
   name: "Dahej Calculator",
   description:
-    "Calculate dowry expectations based on various factors such as age, caste, education, skin tone, and more.",
+    "Calculate dahej expectations based on various factors such as age, caste, education, skin tone, and more.",
   url: "https://dahej-calculator-phi.vercel.app",
   ogImage: "https://dahej-calculator-phi.vercel.app/opengraph-image.png",
   links: {
