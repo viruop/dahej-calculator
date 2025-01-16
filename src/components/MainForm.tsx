@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "@/schemas/formSchema";
 import { FormValues } from "@/types/index";
 import { Form, FormField } from "@/components/ui/form";
-import { formConfig } from "@/lib/config";
+import { formConfig, siteConfig } from "@/lib/config";
 import { FormFieldRenderer } from "./FormFieldRenderer";
 import ShimmerButton from "./ui/shimmer-button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "./ui/drawer";
@@ -258,7 +258,7 @@ export default function MainForm() {
               </h2>
               <Link
                 target="_blank"
-                href={"https://github.com"}
+                href={siteConfig.links.github}
                 className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5"
               >
                 Star it on Github

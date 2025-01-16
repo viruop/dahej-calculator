@@ -1,8 +1,10 @@
 import MainForm from "@/components/MainForm";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import SparklesText from "@/components/ui/sparkles-text";
+import { siteConfig } from "@/lib/config";
 import { Github } from "lucide-react";
 import Link from "next/link";
+import React from "react";
 
 export default function Home() {
   return (
@@ -13,7 +15,7 @@ export default function Home() {
       </div>
       <BackgroundBeams />
       <div className="rounded-2xl p-4 bg-slate-50 fixed left-4 bottom-4 flex justify-center items-center shadow-md h-9 w-9 z-[9000] ">
-        <Link target="_blank" href={"https://github.com"}>
+        <Link target="_blank" href={siteConfig.links.github}>
           <Github className=" text-secondary" />
         </Link>
       </div>

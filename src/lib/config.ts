@@ -68,4 +68,4 @@ export const siteConfig = {
     "traditional dowry",
     "marriage expectations",
   ],
-};
+} as const;
