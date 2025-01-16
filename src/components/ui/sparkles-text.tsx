@@ -222,17 +222,6 @@ const SparklesText: React.FC<SparklesTextProps> = ({
             transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
             className="h-20 w-[8px] bg-gradient-to-b from-transparent via-neutral-100 to-transparent absolute z-50 will-change-transform"
           ></motion.div>
-          {/* <motion.div
-            animate={{
-              opacity: widthPercentage > 0 ? 0 : 1,
-              scale: widthPercentage > 0 ? 0.95 : 1,
-              y: widthPercentage > 0 ? -10 : 0,
-            }}
-            initial={false}
-            transition={{ duration: 0.2 }}
-          >
-            <strong>{text}</strong>
-          </motion.div> */}
           <strong>{text}</strong>
         </div>
       </span>

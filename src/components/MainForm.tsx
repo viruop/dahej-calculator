@@ -10,7 +10,8 @@ import { FormFieldRenderer } from "./FormFieldRenderer";
 import ShimmerButton from "./ui/shimmer-button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "./ui/drawer";
 import { useState } from "react";
-import NumberTicker from "./ui/number-ticker";
+import { EvervaultCard } from "./ui/evervault-card";
+import Link from "next/link";
 
 export default function MainForm() {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -71,7 +72,12 @@ export default function MainForm() {
   };
 
   const getFunnyMessage = (dahejAmount: number) => {
-    if (dahejAmount < 1000000) {
+    if (dahejAmount < 100000) {
+      return "Bhai, Activa le le";
+    }
+    if (dahejAmount < 500000) {
+      return "Bhai, is dahej se tum ek bullet ayeagi buss!";
+    } else if (dahejAmount < 1000000) {
       return "Bhai, is dahej se tum ek chhoti si car aur ek local plot khareed sakte ho!";
     } else if (dahejAmount < 5000000) {
       return "Yeh dahej ka amount toh tumhein ek achha sa plot aur ek luxury hatchback de sakta hai!";
@@ -96,54 +102,105 @@ export default function MainForm() {
   };
 
   const calculateScore = (data: FormValues, type: string) => {
-    let score = 500000;
+    let score = 500000; // Initial base score
+
+    // Helper function to calculate the score based on the percentage
+    const calculatePercentageImpact = (baseValue: number, percentage: number) =>
+      baseValue * percentage;
+
+    // Helper function to get percentage from formConfig based on value
+    const getPercentage = (
+      category: keyof typeof formConfig,
+      value: string
+    ) => {
+      if (Array.isArray(formConfig[category])) {
+        const selectedOption = formConfig[category].find(
+          (option) => option.value === value
+        );
+        return selectedOption ? selectedOption.percentage : 0; // Default to 0 if not found
+      }
+      return 0; // If not an array with options, return 0 (safe fallback)
+    };
 
     // Age-based scoring
     if (type === "dulha") {
-      score += data.age! > 35 ? -1000 : 0; // Older dulhas may have lower dowry expectations
+      score += data.age! > 35 ? -calculatePercentageImpact(10000, 0.1) : 0; // Older dulhas may have lower dowry expectations
     } else {
-      // dulhan
-      if (data.age! < 25) score += 5000; // Younger dulhans typically have higher dowry expectations
-      if (data.age! > 30) score -= 1000; // Older dulhans might face a slight reduction in dowry expectations
+      if (data.age! < 25) score += calculatePercentageImpact(50000, 0.1); // Younger dulhans typically have higher dowry expectations
+      if (data.age! > 30) score -= calculatePercentageImpact(10000, 0.1); // Older dulhans might face a slight reduction
     }
 
     // Height-based scoring
     if (type === "dulha") {
-      score += Number(data?.height) > 6 ? 2000 : 0; // Taller dulhas typically have higher dowry expectations
+      score +=
+        data.height && Number(data?.height) > 6
+          ? calculatePercentageImpact(20000, 0.15)
+          : 0;
     } else {
-      score += Number(data.height!) > 5.5 ? 2000 : 0; // Taller dulhans also may have higher expectations
+      score +=
+        data.height && Number(data.height!) > 5.5
+          ? calculatePercentageImpact(20000, 0.1)
+          : 0;
     }
 
-    // Caste-based scoring (with more nuanced caste system)
-    if (data.caste === "Brahmin") score += 3000; // Brahmin caste may have higher dowry expectations
-    if (data.caste === "Kshatriya") score += 2000; // Kshatriya caste also adds to dowry expectations
-    if (data.caste === "Bhumihar") score += 18000; // Kshatriya caste also adds to dowry expectations
+    // Caste-based scoring (fetch percentage from config)
+    const castePercentage = getPercentage("caste", data.caste);
+    score += calculatePercentageImpact(30000, castePercentage);
+    console.log("castePercentage", castePercentage);
 
-    if (data.caste === "Yadav" || data.caste === "General") score += 1000; // Yadav/Bhumihar caste adds moderate expectations
-    if (data.caste === "SC/ST") score -= 3000; // SC/ST may face lower dowry expectations due to social dynamics
+    // Education-based scoring (fetch percentage from config)
+    const educationPercentage = getPercentage("education", data.education);
+    score += calculatePercentageImpact(100000, educationPercentage);
 
-    // Education-based scoring
-    if (data.education === "PhD") score += 10000; // PhD holders are seen as higher value
-    if (data.education === "Masters") score += 5000; // Masters degrees also increase dowry expectations
-    if (data.education === "Bachelors") score += 3000; // Bachelors increase expectations moderately
-    if (data.education === "12th Pass") score += 1000; // Minimal increase for 12th pass
+    console.log("educationPercentage", educationPercentage);
 
-    // Skin tone-based scoring (traditional but we limit impact)
+    // Skin tone-based scoring (fetch percentage from config)
+    const skinTonePercentage = getPercentage("skinTone", data.skinTone);
+    console.log("skinTonePercentage", skinTonePercentage);
     if (type === "dulhan") {
-      if (data.skinTone === "Fair") score += 3000; // Fair skin typically increases dowry expectations
-      if (data.skinTone === "Medium") score += 1500; // Medium skin tone moderately increases dowry expectations
+      if (data.skinTone === "Fair")
+        score += calculatePercentageImpact(30000, skinTonePercentage);
+      if (data.skinTone === "Medium")
+        score += calculatePercentageImpact(15000, skinTonePercentage);
     }
 
-    // Cooking ability
-    score += data.cooking === "Yes" ? 2000 : -1000; // Cooking ability typically adds to expectations
+    // Cooking ability scoring (fetch percentage from config)
+    const cookingPercentage = getPercentage("cooking", data.cooking);
+    score +=
+      data.cooking === "Yes"
+        ? calculatePercentageImpact(20000, cookingPercentage)
+        : calculatePercentageImpact(-10000, cookingPercentage);
 
-    // Body count-based scoring (important in traditional settings)
-    score -= Number(data.bodyCount)! * (type === "dulha" ? 500 : 1000); // Higher body count lowers dowry expectations
+    // Body count-based scoring (fetch percentage from config)
+    // const bodyCountPercentage = getPercentage("bodyCount", data.bodyCount);
+    // score -= calculatePercentageImpact(
+    //   data.bodyCount !== "2+"
+    //     ? Number(data.bodyCount)! * (type === "dulha" ? 5000 : 10000)
+    //     : 0,
+    //   bodyCountPercentage
+    // );
+    score -=
+      data.bodyCount !== "2+"
+        ? Number(data.bodyCount)! * (type === "dulha" ? 5000 : 10000)
+        : 40000;
 
-    // Job-based scoring (Government jobs are highly valued)
-    score += data.job === "Government" ? 8000 : 4000; // Government jobs tend to significantly raise dowry expectations
-    score += data.job === "Business" ? 6000 : 0; // Business also raises expectations but slightly less than Government jobs
-    score += data.job === "Private" ? 4000 : 0; // Private job also contributes moderately
+    // Job-based scoring (fetch percentage from config)
+    const jobPercentage = getPercentage("job", data.job);
+    score += calculatePercentageImpact(80000, jobPercentage);
+
+    // Snapscore-based scoring (snapscore percentage can be a separate factor, if desired)
+    if (data.snapscore) {
+      const snapscore = data.snapscore * 10000;
+      score -= snapscore;
+    }
+
+    // Income-based scoring (percentage-based impact)
+    if (data.income) {
+      const income = data.income * 10000;
+      if (income > 100000) score += calculatePercentageImpact(50000, 0.1);
+      else if (income > 50000) score += calculatePercentageImpact(20000, 0.05);
+      else if (income > 20000) score += calculatePercentageImpact(5000, 0.03);
+    }
 
     return score;
   };
@@ -185,15 +242,28 @@ export default function MainForm() {
         open={openDrawer}
       >
         <DrawerContent>
-          <div className="mx-auto h-[85vh] p-6 flex justify-center items-center flex-col overflow-auto w-full">
+          <div className="mx-auto h-[85vh] p-6 flex justify-center items-center flex-col w-full">
             <DrawerHeader>
-              <DrawerTitle>Dahej Amount</DrawerTitle>
-              {/* <DrawerDescription>Set your daily activity goal.</DrawerDescription> */}
+              <DrawerTitle className="sr-only">Dahej Amount</DrawerTitle>
             </DrawerHeader>
-            <p className="whitespace-pre-wrap text-8xl font-medium tracking-tighter text-black dark:text-white">
-              <NumberTicker value={dahejAmount} />
-            </p>
-            <p>{message}</p>
+
+            <div className="rounded-md flex flex-col items-start max-w-lg mx-auto p-4 relative">
+              <EvervaultCard
+                text={dahejAmount.toString()}
+                backgroundMessage={message}
+              />
+
+              <h2 className="dark:text-white text-black mt-4 text-sm font-light">
+                {message}
+              </h2>
+              <Link
+                target="_blank"
+                href={"https://github.com"}
+                className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5"
+              >
+                Star it on Github
+              </Link>
+            </div>
           </div>
         </DrawerContent>
       </Drawer>
@@ -210,7 +280,7 @@ const FormComponent = ({
 }) => (
   <Form {...form}>
     <form className="space-y-6">
-      <h2 className=" tracking-tight text-xl font-semibold mb-6">{`${role} Details`}</h2>
+      <h2 className="tracking-tight text-xl font-semibold mb-6">{`${role} Details`}</h2>
       <div className="grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2">
         <RenderFormFields form={form} />
       </div>
