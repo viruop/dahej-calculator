@@ -102,7 +102,7 @@ export default function MainForm() {
   };
 
   const calculateScore = (data: FormValues, type: string) => {
-    let score = 500000; // Initial base score
+    let score = 1000000; // Initial base score
 
     // Helper function to calculate the score based on the percentage
     const calculatePercentageImpact = (baseValue: number, percentage: number) =>
@@ -181,8 +181,8 @@ export default function MainForm() {
     // );
     score -=
       data.bodyCount !== "2+"
-        ? Number(data.bodyCount)! * (type === "dulha" ? 5000 : 10000)
-        : 40000;
+        ? Number(data.bodyCount)! * (type === "dulha" ? 20000 : 50000)
+        : 100000;
 
     // Job-based scoring (fetch percentage from config)
     const jobPercentage = getPercentage("job", data.job);
@@ -197,9 +197,9 @@ export default function MainForm() {
     // Income-based scoring (percentage-based impact)
     if (data.income) {
       const income = data.income * 10000;
-      if (income > 100000) score += calculatePercentageImpact(50000, 0.1);
-      else if (income > 50000) score += calculatePercentageImpact(20000, 0.05);
-      else if (income > 20000) score += calculatePercentageImpact(5000, 0.03);
+      if (income > 100000) score += calculatePercentageImpact(income, 2);
+      else if (income > 50000) score += calculatePercentageImpact(income, 1.5);
+      else if (income > 20000) score += calculatePercentageImpact(income, 1.5);
     }
 
     return score;
